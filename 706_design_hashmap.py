@@ -1,3 +1,8 @@
+# No underscore: Public, for regular use.
+# Single underscore (_): Protected, for internal use but accessible if needed.
+# Double underscore (__): Private, name-mangled for better isolation.
+# hashTable: a list
+# hash function: key -> index of hashTable
 class node:
     def __init__(self, key=-1, value = -1, next=None):
         self.key = key
@@ -14,8 +19,12 @@ class MyHashMap:
     def put(self, key: int, value: int) -> None:
         index = self.__hash(key)
         head = self.__hashTable[index]
+        # find the previous pointer where its next
+        # node's key is equal to the given key 
         while head.next and head.next.key != key: 
             head = head.next
+        # two cases (1) existing in hashTable
+        #           (2) nonexisting
         if head.next: 
             head.next.value = value;
         else:
@@ -27,6 +36,9 @@ class MyHashMap:
         head = self.__hashTable[index]
         while head.next and head.next.key != key:  
             head = head.next
+            
+        # two cases (1) existing in hashTable
+        #           (2) nonexisting
         if head.next:
             return head.next.value;
         else:
