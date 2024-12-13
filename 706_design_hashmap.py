@@ -10,21 +10,13 @@ class node:
         self.next = next
 
 class MyHashMap:
-
     def __init__(self):
         self.__size = 1000
         self.__hashTable = [node() for i in range(self.__size) ]
 
 
     def put(self, key: int, value: int) -> None:
-        index = self.__hash(key)
-        head = self.__hashTable[index]
-        # find the previous pointer where its next
-        # node's key is equal to the given key 
-        while head.next and head.next.key != key: 
-            head = head.next
-        # two cases (1) existing in hashTable
-        #           (2) nonexisting
+        head = self.__find_prev_node(key)
         if head.next: 
             head.next.value = value;
         else:
@@ -32,26 +24,28 @@ class MyHashMap:
 
 
     def get(self, key: int) -> int:
-        index = self.__hash(key)
-        head = self.__hashTable[index]
-        while head.next and head.next.key != key:  
-            head = head.next
-            
-        # two cases (1) existing in hashTable
-        #           (2) nonexisting
+        head = self.__find_prev_node(key)
         if head.next:
             return head.next.value;
         else:
             return -1
 
     def remove(self, key: int) -> None:
-        index = self.__hash(key)
-        head = self.__hashTable[index]
-        while head.next and head.next.key != key: 
-            head = head.next
+        head = self.__find_prev_node(key)
         if head.next:
             tmp = head.next
             head.next = head.next.next
 
     def __hash(self, key: int) -> int:
         return key%self.__size;
+
+    def __find_prev_node(self, key: int) -> node:
+        # given key and find the index in hashTable
+        index = self.__hash(key)
+        # find the dummy head of linked list
+        head = self.__hashTable[index]
+        # find the previous node where its next node's value
+        # is equal to given key
+        while head.next and head.next.key != key: 
+            head = head.next
+        return head
